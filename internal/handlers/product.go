@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
@@ -11,7 +10,7 @@ import (
 	"github.com/mohdjishin/order-inventory-management/util"
 )
 
-type addProductRequest struct {
+type AddProductRequest struct {
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price" validate:"required,gte=0"`
@@ -20,42 +19,51 @@ type addProductRequest struct {
 }
 
 func AddProduct(c fiber.Ctx) error {
-	var input addProductRequest
+	var input AddProductRequest
 
 	if err := json.Unmarshal(c.Body(), &input); err != nil {
-		log.Error().Err(err).Msg("Failed to unmarshal request body")
+		log.Error().Err(err).Msg("Failed to parse request body")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Invalid JSON format",
+			"message": "Invalid request body",
 		})
 	}
 
 	if validationErrors, err := util.ValidateStruct(input); err != nil {
-		log.Warn().Err(err).Msg("Validation failed for product input")
+		log.Warn().Err(err).Msg("Validation failed for AddProductRequest")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid or missing fields",
 			"fields":  validationErrors,
 		})
 	}
-	val, ok := c.Locals("userId").(float64)
+
+	userID, ok := c.Locals("userId").(float64)
 	if !ok {
-		fmt.Println("Failed to extract user userId from context", c.Locals("userId"))
-		log.Error().Msg("Failed to extract user ID from context")
+		log.Error().Msg("Failed to retrieve user ID from context")
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Failed to add product",
+			"message": "Failed to process user ID",
 		})
 	}
+
 	product := models.Product{
 		Name:        input.Name,
 		Description: input.Description,
 		Price:       input.Price,
 		Category:    input.Category,
-		AddedBy:     uint(val),
+		AddedBy:     uint(userID),
 	}
 
 	tx := db.GetDb().Begin()
+	if tx.Error != nil {
+		log.Error().Err(tx.Error).Msg("Failed to start database transaction")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to process transaction",
+		})
+	}
+
 	if err := tx.Create(&product).Error; err != nil {
 		tx.Rollback()
 		log.Error().Err(err).Msg("Failed to create product")
@@ -68,6 +76,7 @@ func AddProduct(c fiber.Ctx) error {
 	inventory := models.Inventory{
 		ProductID: product.ID,
 		Stock:     input.Stock,
+		AddedBy:   uint(userID),
 	}
 
 	if err := tx.Create(&inventory).Error; err != nil {
@@ -75,13 +84,19 @@ func AddProduct(c fiber.Ctx) error {
 		log.Error().Err(err).Msg("Failed to create product inventory")
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Failed to add product inventory",
+			"message": "Failed to add inventory for the product",
 		})
 	}
 
-	tx.Commit()
+	if err := tx.Commit().Error; err != nil {
+		log.Error().Err(err).Msg("Failed to commit transaction")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Transaction failed to complete",
+		})
+	}
 
-	log.Info().Msgf("Product added successfully: ID=%d, Name=%s", product.ID, product.Name)
+	log.Info().Msgf("Product added successfully: ID=%d, Name=%s, AddedBy=%d", product.ID, product.Name, product.AddedBy)
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status":  "success",
 		"message": "Product added successfully",
