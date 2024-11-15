@@ -4,6 +4,7 @@ import (
 	"github.com/mohdjishin/order-inventory-management/config"
 	_ "github.com/mohdjishin/order-inventory-management/config"
 	"github.com/mohdjishin/order-inventory-management/db/migrations"
+	"github.com/mohdjishin/order-inventory-management/internal/routes"
 
 	fiber "github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
@@ -11,32 +12,28 @@ import (
 )
 
 func main() {
-	// Load configuration
-	// config.LoadConfig()
 
-	// Create Fiber app
+	// Run database migrations
 	if err := migrations.Run(); err != nil {
 		log.Fatal().Err(err)
 	}
 
+	// Initialize a new Fiber app
 	app := fiber.New()
+
+	// Apply logging middleware
 	app.Use(logger.New())
-	app.Get("/", func(c fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
 
-	// User Routes
-	// user := app.Group("/user")
-	// handlers.UserRoutes(user)
+	// User group for supplier-related routes
+	userGroup := app.Group("/user")
+	routes.RegisterSupplierRoutes(userGroup)
 
-	// Admin Routes
-	// admin := app.Group("/admin")
-	// admin.Use(middlewares.AdminAuthMiddleware) // Apply middleware for admin routes
-	// handlers.AdminRoutes(admin)
+	// Admin group for admin-related routes
+	adminGroup := app.Group("/admin")
+	routes.RegisterAdminRoutes(adminGroup)
 
-	// Start server
+	// Start the server
 	log.Info().Msg("Starting server")
 	log.Info().Msg("Server started on port " + config.Get().Port)
 	log.Fatal().Err(app.Listen(config.Get().Port))
-
 }

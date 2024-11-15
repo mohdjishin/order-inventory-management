@@ -47,7 +47,7 @@ func (m *DBManager) Connect() {
 	log.Info().Msg("Connecting to database")
 	var err error
 	fmt.Println("DSN: ", config.Get().DSN)
-	m.db, err = gorm.Open(postgres.Open("host=db user=myuser password=mypassword dbname=mydb port=5432 sslmode=disable"), &gorm.Config{})
+	m.db, err = gorm.Open(postgres.Open(config.Get().DSN), &gorm.Config{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect to database")
 	}

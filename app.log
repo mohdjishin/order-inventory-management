@@ -1,0 +1,4 @@
+{"level":"info","time":"2024-11-16T00:30:02+05:30","message":"Running database migrations"}
+{"level":"info","time":"2024-11-16T00:30:03+05:30","message":"Database migration successful"}
+{"level":"info","time":"2024-11-16T00:30:03+05:30","message":"Starting server"}
+{"level":"info","time":"2024-11-16T00:30:03+05:30","message":"Server started on port :8080"}

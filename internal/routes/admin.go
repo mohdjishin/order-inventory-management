@@ -1,12 +1,16 @@
 package routes
 
-import "github.com/gofiber/fiber/v3"
+import (
+	"github.com/gofiber/fiber/v3"
+	"github.com/mohdjishin/order-inventory-management/internal/handlers"
+)
 
-func AdminRoutes(app fiber.Router) {
-	// app.Post("/inventory", AddProductHandler)
-	// app.Put("/inventory/:id", UpdateProductHandler)
-	// app.Delete("/inventory/:id", RemoveProductHandler)
-	// app.Get("/orders", ListOrdersHandler)
-	// app.Get("/orders/:id", GetOrderDetailsHandler)
-	// app.Get("/statistics", GenerateStatisticsHandler)
+func RegisterAdminRoutes(app fiber.Router) {
+	adminGroup := app.Group("/")
+
+	adminGroup.Post("/approve-supplier/", handlers.ApproveSupplier)
+
+	adminGroup.Get("/approved-suppliers", handlers.ListApprovedSuppliers)
+
+	adminGroup.Get("/non-approved-suppliers", handlers.ListNonApprovedSuppliers)
 }
