@@ -2,6 +2,7 @@
     "dsn": "host=localhost user=myuser password=mypassword dbname=mydb port=5432 sslmode=disable",
     "LogLevel": "info",
     "LogFile": "app.log",
-    "port": ":8080"
+    "port": ":8080",
+    "jwtSecret":"Bx+ADmd0acEdsjkLAc9vZZ557jEXHNR5"
   }
   

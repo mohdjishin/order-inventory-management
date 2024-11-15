@@ -8,7 +8,6 @@ import (
 
 func Run() error {
 	log.Info().Msg("Running database migrations")
-	// Migrate the models to the database
 
 	err := db.GetDb().AutoMigrate(&models.Product{}, &models.Order{}, &models.Inventory{}, &models.PricingHistory{}, &models.User{})
 	if err != nil {

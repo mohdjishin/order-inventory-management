@@ -22,3 +22,14 @@ func Info() *zerolog.Event {
 func Fatal() *zerolog.Event {
 	return Logger.Fatal()
 }
+
+func Error() *zerolog.Event {
+	return Logger.Error()
+}
+
+func Debug() *zerolog.Event {
+	return Logger.Debug()
+}
+func Warn() *zerolog.Event {
+	return Logger.Warn()
+}

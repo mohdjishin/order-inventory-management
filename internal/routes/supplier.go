@@ -5,7 +5,10 @@ import (
 	"github.com/mohdjishin/order-inventory-management/internal/handlers"
 )
 
-func RegisterSupplierRoutes(userGroup fiber.Router) {
+func RegisterUserRoutes(userGroup fiber.Router) {
+
+	userGroup.Post("/login", handlers.Login)
+
 	supplierGroup := userGroup.Group("/supplier")
 
 	supplierGroup.Post("/", handlers.CreateSupplier)
