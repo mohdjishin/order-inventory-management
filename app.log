@@ -1,4 +1,6 @@
-{"level":"info","time":"2024-11-16T01:14:12+05:30","message":"Running database migrations"}
-{"level":"info","time":"2024-11-16T01:14:12+05:30","message":"Database migration successful"}
-{"level":"info","time":"2024-11-16T01:14:12+05:30","message":"Starting server"}
-{"level":"info","time":"2024-11-16T01:14:12+05:30","message":"Server started on port :8080"}
+{"level":"info","time":"2024-11-16T02:27:19+05:30","message":"Running database migrations"}
+{"level":"info","time":"2024-11-16T02:27:19+05:30","message":"Database migration successful"}
+{"level":"info","time":"2024-11-16T02:27:19+05:30","message":"Starting server"}
+{"level":"info","time":"2024-11-16T02:27:19+05:30","message":"Server started on port :8080"}
+{"level":"debug","request-url":"/supplier/product/","time":"2024-11-16T02:27:20+05:30","message":"Auth middleware"}
+{"level":"info","time":"2024-11-16T02:27:20+05:30","message":"Product added successfully: ID=1, Name=New Product"}

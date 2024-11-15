@@ -9,6 +9,8 @@ type Product struct {
 	Category    string  `gorm:"not null"`        // Category cannot be null
 	CreatedAt   int64   `gorm:"autoCreateTime"`  // Automatically set creation time
 	UpdatedAt   int64   `gorm:"autoUpdateTime"`  // Automatically set update time
+	AddedBy     uint    `gorm:"not null"`        // User who added the product
+
 }
 
 // TableName overrides the default table name (products) if necessary

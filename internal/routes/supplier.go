@@ -3,13 +3,13 @@ package routes
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/internal/handlers"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 )
 
-func RegisterUserRoutes(userGroup fiber.Router) {
+func RegisterSupplierRoutes(supplierGroup fiber.Router) {
 
-	userGroup.Post("/login", handlers.Login)
+	productGroup := supplierGroup.Group("/product")
+	productGroup.Use(middleware.AuthMiddleware)
+	productGroup.Post("/", handlers.AddProduct)
 
-	supplierGroup := userGroup.Group("/supplier")
-
-	supplierGroup.Post("/", handlers.CreateSupplier)
 }

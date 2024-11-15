@@ -24,6 +24,9 @@ func main() {
 	userGroup := app.Group("/user")
 	routes.RegisterUserRoutes(userGroup)
 
+	supplier := app.Group("/supplier")
+	routes.RegisterSupplierRoutes(supplier)
+
 	adminGroup := app.Group("/admin")
 	routes.RegisterAdminRoutes(adminGroup)
 

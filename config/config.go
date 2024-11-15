@@ -15,6 +15,7 @@ type Config struct {
 	LogLevel string `json:"LogLevel"`
 	LogFile  string `json:"LogFile"`
 	Port     string `json:"port"`
+	JwtKey   string `json:"jwtSecret"`
 }
 
 var configInstance *Config
@@ -61,7 +62,10 @@ func Get() *Config {
 // initLogger initializes the logger based on log level and log file
 func initLogger(logLevel, logFile string) {
 	var level zerolog.Level
+	fmt.Println("logLevel: ", logLevel)
+
 	switch strings.ToLower(logLevel) {
+
 	case "debug":
 		level = zerolog.DebugLevel
 	case "info":

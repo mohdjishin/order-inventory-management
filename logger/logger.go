@@ -11,6 +11,7 @@ var Logger zerolog.Logger
 
 func init() {
 	Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+
 }
 
 // Info logs an info message
