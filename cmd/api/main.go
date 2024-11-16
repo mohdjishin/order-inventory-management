@@ -4,6 +4,7 @@ import (
 	"github.com/mohdjishin/order-inventory-management/config"
 	_ "github.com/mohdjishin/order-inventory-management/config"
 	"github.com/mohdjishin/order-inventory-management/db/migrations"
+	"github.com/mohdjishin/order-inventory-management/internal/handlers"
 	"github.com/mohdjishin/order-inventory-management/internal/routes"
 	"go.uber.org/zap"
 
@@ -21,7 +22,8 @@ func main() {
 	app := fiber.New()
 
 	app.Use(logger.New())
-
+	app.Get("/version", handlers.GetVersion)
+	app.Get("/health", handlers.HealthCheck)
 	userGroup := app.Group("/user")
 	routes.RegisterUserRoutes(userGroup)
 
