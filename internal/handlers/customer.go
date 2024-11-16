@@ -35,7 +35,7 @@ func BuyProduct(c fiber.Ctx) error {
 
 	userId, ok := c.Locals("userId").(float64)
 	if !ok {
-		log.Error().Msg("Failed to extract user ID from context")
+		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to extract user ID from context",

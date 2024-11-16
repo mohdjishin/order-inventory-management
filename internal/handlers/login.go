@@ -8,6 +8,7 @@ import (
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	"github.com/mohdjishin/order-inventory-management/logger"
 	"github.com/mohdjishin/order-inventory-management/util"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,15 +21,14 @@ func Login(c fiber.Ctx) error {
 	var req LoginRequest
 
 	if err := json.Unmarshal(c.Body(), &req); err != nil {
-		logger.Error().Err(err).Msg("Error decoding request body")
+		logger.Error("Failed to parse input", zap.Error(err))
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Bad request, unable to parse input",
 		})
 	}
 
-	logger.Debug().Any("request", req).Msg("Login request received")
-
+	logger.Debug("Login request", zap.Any("req", req))
 	if validationErrors, err := util.ValidateStruct(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":  "Validation failed",
@@ -38,7 +38,7 @@ func Login(c fiber.Ctx) error {
 
 	var user models.User
 	if err := db.GetDb().Where("email = ?", req.Email).First(&user).Error; err != nil {
-		logger.Error().Err(err).Msg("Error fetching user")
+		logger.Error("User not found", zap.Error(err))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid credentials",
@@ -46,7 +46,7 @@ func Login(c fiber.Ctx) error {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		logger.Error().Err(err).Msg("Error comparing password")
+		logger.Error("Invalid password", zap.Error(err))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid credentials",
@@ -55,7 +55,7 @@ func Login(c fiber.Ctx) error {
 
 	token, err := util.GenerateToken(user)
 	if err != nil {
-		logger.Error().Err(err).Msg("Error generating token")
+		logger.Error("Error generating token", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to generate token",

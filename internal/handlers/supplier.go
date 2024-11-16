@@ -8,6 +8,7 @@ import (
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"github.com/mohdjishin/order-inventory-management/util"
+	"go.uber.org/zap"
 )
 
 func CreateSupplier(c fiber.Ctx) error {
@@ -24,7 +25,7 @@ func CreateSupplier(c fiber.Ctx) error {
 func ListOrdersForSupplier(c fiber.Ctx) error {
 	supplierId, ok := c.Locals("userId").(float64)
 	if !ok {
-		log.Error().Msg("Failed to extract supplier ID from context")
+		log.Error("Failed to extract supplier ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to extract supplier ID from context",
@@ -76,7 +77,7 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 
 	supplierID, ok := c.Locals("userId").(float64)
 	if !ok {
-		log.Error().Msg("Failed to extract supplier ID from context")
+		log.Error("Failed to extract supplier ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to extract supplier ID from context",
@@ -92,7 +93,7 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 
 	var order models.Order
 	if err := db.GetDb().Where("id = ? AND supplier_id = ?", req.OrderID, supplierID).First(&order).Error; err != nil {
-		log.Error().Err(err).Msg("Order not found or supplier not authorized")
+		log.Error("Order not found or supplier not authorized", zap.Any("error", err))
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Order not found or you are not authorized to approve this order",
 		})
@@ -100,7 +101,7 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 
 	order.Status = req.Status
 	if err := db.GetDb().Save(&order).Error; err != nil {
-		log.Error().Err(err).Msg("Failed to update order status")
+		log.Error("Failed to update order status", zap.Any("error", err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to update order status",
 		})
@@ -108,14 +109,14 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 	if order.Status == approved {
 		var inventory models.Inventory
 		if err := db.GetDb().Where("product_id = ?", order.ProductID).First(&inventory).Error; err != nil {
-			log.Error().Err(err).Msg("Inventory not found for the product")
+			log.Error("Inventory not found for the product", zap.Any("error", err))
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "Inventory not found for the product",
 			})
 		}
 		inventory.Stock = inventory.Stock - order.Quantity
 		if err := db.GetDb().Save(&inventory).Error; err != nil {
-			log.Error().Err(err).Msg("Failed to update inventory stock")
+			log.Error("Failed to update inventory stock", zap.Any("error", err))
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "Failed to update inventory stock",
 			})

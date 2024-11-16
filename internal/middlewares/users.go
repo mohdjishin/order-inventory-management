@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	config "github.com/mohdjishin/order-inventory-management/config"
 	log "github.com/mohdjishin/order-inventory-management/logger"
+	"go.uber.org/zap"
 )
 
 type Error struct {
@@ -28,17 +29,17 @@ var (
 const authorization = "Authorization"
 
 func AuthMiddleware(c fiber.Ctx) error {
-	log.Debug().Str("request-url", c.OriginalURL()).Msg("Auth middleware")
+	log.Debug("AuthMiddleware")
 
 	authHeader := c.Get(authorization)
 	if authHeader == "" {
-		log.Error().Msg("Authorization header not found")
+		log.Error("Authorization header not found")
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrUnauthorizationHeaderNotFound)
 	}
 
 	parts := strings.Split(authHeader, "Bearer ")
 	if len(parts) != 2 || strings.TrimSpace(parts[1]) == "" {
-		log.Error().Str("authHeader", authHeader).Msg("Invalid Authorization header format")
+		log.Error("Invalid Authorization header format", zap.Any("parts", parts))
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidAuthHeader)
 	}
 
@@ -50,29 +51,27 @@ func AuthMiddleware(c fiber.Ctx) error {
 	})
 
 	if err != nil || !token.Valid {
-		log.Error().Err(err).Msg("Failed to parse token")
+		log.Error("Failed to parse token", zap.Error(err))
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidToken)
 	}
-	fmt.Println("claims", claims)
 	userID, ok := (*claims)["id"].(float64)
 	if !ok {
 		fmt.Printf("id %T\n", (*claims)["id"])
 		fmt.Println("Failed to extract user ID from token", claims)
-		log.Error().Msg("Failed to extract user ID from token claims")
+		log.Error("Failed to extract user ID from token claims")
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidToken)
 	}
-	fmt.Println("userID", userID)
 
 	email, ok := (*claims)["email"].(string)
 	if !ok {
 		fmt.Printf("email%T\n", (*claims)["email"])
-		log.Error().Msg("Failed to extract email from token claims")
+		log.Error("Failed to extract email from token claims")
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidToken)
 	}
 	role, ok := (*claims)["role"].(string)
 	if !ok {
 		fmt.Printf("role %T\n", (*claims)["role"])
-		log.Error().Msg("Failed to extract role from token claims")
+		log.Error("Failed to extract role from token claims")
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidToken)
 	}
 

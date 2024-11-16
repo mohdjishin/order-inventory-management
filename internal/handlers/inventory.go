@@ -8,12 +8,13 @@ import (
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"github.com/mohdjishin/order-inventory-management/util"
+	"go.uber.org/zap"
 )
 
 func ListUserInventoryWithProduct(c fiber.Ctx) error {
 	val, ok := c.Locals("userId").(float64)
 	if !ok {
-		log.Error().Msg("Failed to extract user ID from context")
+		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to extract user ID from context",
@@ -24,7 +25,7 @@ func ListUserInventoryWithProduct(c fiber.Ctx) error {
 
 	var inventories []models.Inventory
 	if err := db.GetDb().Preload("Product").Where("added_by = ?", userID).Find(&inventories).Error; err != nil {
-		log.Error().Err(err).Msg("Failed to fetch inventories and products for user")
+		log.Error("Failed to fetch inventories and products for user", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to fetch inventories and products",
@@ -58,7 +59,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 	var input AddInventoryRequest
 
 	if err := json.Unmarshal(c.Body(), &input); err != nil {
-		log.Error().Err(err).Msg("Failed to parse request body")
+		log.Error("Failed to parse request body", zap.Error(err))
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid request body",
@@ -67,7 +68,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 
 	userId, ok := c.Locals("userId").(float64)
 	if !ok {
-		log.Error().Msg("Failed to extract user ID from context")
+		log.Error("Failed to extract user ID from context", zap.Any("userId", userId))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to extract user ID from context",
@@ -75,7 +76,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 	}
 
 	if validationErrors, err := util.ValidateStruct(input); err != nil {
-		log.Warn().Err(err).Msg("Validation failed for AddInventoryRequest")
+		log.Error("Validation failed for AddInventoryRequest", zap.Any("input", input), zap.Any("errors", validationErrors))
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid or missing fields",
@@ -93,7 +94,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 
 	tx := db.GetDb().Begin()
 	if tx.Error != nil {
-		log.Error().Err(tx.Error).Msg("Failed to start database transaction")
+		log.Error("Failed to start database transaction", zap.Error(tx.Error))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to process transaction",
@@ -102,7 +103,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 
 	if err := tx.Create(&product).Error; err != nil {
 		tx.Rollback()
-		log.Error().Err(err).Msg("Failed to create product")
+		log.Error("Failed to create product", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to create product",
@@ -118,7 +119,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 
 	if err := tx.Create(&inventory).Error; err != nil {
 		tx.Rollback()
-		log.Error().Err(err).Msg("Failed to create inventory")
+		log.Error("Failed to create inventory", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to create inventory",
@@ -129,7 +130,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 	product.InventoryID = inventory.ID
 	if err := tx.Save(&product).Error; err != nil {
 		tx.Rollback()
-		log.Error().Err(err).Msg("Failed to update product with inventory ID")
+		log.Error("Failed to update product with inventory ID", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to update product with inventory ID",
@@ -138,7 +139,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 
 	// Commit Transaction
 	if err := tx.Commit().Error; err != nil {
-		log.Error().Err(err).Msg("Failed to commit transaction")
+		log.Error("Failed to commit transaction", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Transaction failed to complete",
@@ -146,7 +147,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 	}
 
 	// Successfully created Product and Inventory
-	log.Info().Msgf("Inventory and product added successfully: Inventory ID=%d, Product ID=%d", inventory.ID, product.ID)
+	log.Info("Product and Inventory added successfully", zap.Any("product", product), zap.Any("inventory", inventory))
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status":  "success",
 		"message": "Inventory and product added successfully",

@@ -5,6 +5,7 @@ import (
 	_ "github.com/mohdjishin/order-inventory-management/config"
 	"github.com/mohdjishin/order-inventory-management/db/migrations"
 	"github.com/mohdjishin/order-inventory-management/internal/routes"
+	"go.uber.org/zap"
 
 	fiber "github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
@@ -14,7 +15,7 @@ import (
 func main() {
 
 	if err := migrations.Run(); err != nil {
-		log.Fatal().Err(err)
+		log.Fatal("Failed to run migrations", zap.Error(err))
 	}
 
 	app := fiber.New()
@@ -33,7 +34,7 @@ func main() {
 	routes.RegisterAdminRoutes(adminGroup)
 
 	// Start the server
-	log.Info().Msg("Starting server")
-	log.Info().Msg("Server started on port " + config.Get().Port)
-	log.Fatal().Err(app.Listen(config.Get().Port))
+	log.Info("Starting server")
+	log.Info("Server started on port " + config.Get().Port)
+	log.Fatal("Listen ", zap.Error(app.Listen(config.Get().Port)))
 }

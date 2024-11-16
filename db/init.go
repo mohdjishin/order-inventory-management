@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	"github.com/mohdjishin/order-inventory-management/config"
+	"go.uber.org/zap"
+
 	// "github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"gorm.io/driver/postgres"
@@ -44,12 +46,12 @@ func init() {
 }
 
 func (m *DBManager) Connect() {
-	log.Info().Msg("Connecting to database")
+	log.Info("Connecting to database")
 	var err error
 	fmt.Println("DSN: ", config.Get().DSN)
 	m.db, err = gorm.Open(postgres.Open(config.Get().DSN), &gorm.Config{})
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to connect to database")
+		log.Fatal("failed to connect to database", zap.Error(err))
 	}
 
 }

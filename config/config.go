@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	log "github.com/mohdjishin/order-inventory-management/logger"
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 )
 
 type Config struct {
@@ -43,7 +42,7 @@ func LoadConfig(filePath string) (*Config, error) {
 	configInstance = config
 
 	// Initialize logger based on config
-	initLogger(config.LogLevel, config.LogFile)
+	// initLogger(config.LogLevel, config.LogFile)
 
 	return config, nil
 }
@@ -53,45 +52,10 @@ func Get() *Config {
 	if configInstance == nil {
 		_, err := LoadConfig("config.json") // Default path to the config file
 		if err != nil {
-			log.Fatal().Err(err).Msg("failed to load config file	")
+			log.Fatal("failed to load config file	", zap.Error(err))
 		}
 	}
 	return configInstance
 }
 
 // initLogger initializes the logger based on log level and log file
-func initLogger(logLevel, logFile string) {
-	var level zerolog.Level
-	fmt.Println("logLevel: ", logLevel)
-
-	switch strings.ToLower(logLevel) {
-
-	case "debug":
-		level = zerolog.DebugLevel
-	case "info":
-		level = zerolog.InfoLevel
-	case "warn":
-		level = zerolog.WarnLevel
-	case "error":
-		level = zerolog.ErrorLevel
-	case "fatal":
-		level = zerolog.FatalLevel
-	default:
-		level = zerolog.InfoLevel
-	}
-
-	// Set up the logger to log to a file or console
-	if logFile != "" {
-		// Log to file
-		file, err := os.Create(logFile)
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to create log file")
-		}
-		zerolog.SetGlobalLevel(level)
-		log.Logger = zerolog.New(file).With().Timestamp().Logger()
-	} else {
-		// Log to console
-		zerolog.SetGlobalLevel(level)
-		log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
-	}
-}
