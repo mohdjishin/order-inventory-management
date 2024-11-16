@@ -7,19 +7,13 @@ TODOS:
   - remaining users will be wrapped with jwt token.
 
 
-- Add a product 
-- Update a product
-- Delete a product
-- List all products
-- List all products by supplier
-- List all products by buyer
-- List all products by price range
-- List all products by rating
-- List all products by stock availability
+- Asumption settlements (payments) will be done outside the platform. 
+  - so no need to implement payment gateway. 
 
 
 
-- payment is not implementing. dummy project (asuming payment is done ofline or COD or something else)
-<!-- complete this before nov 16 - 9pm -->
-
+- admin
+  - blacklist supplier and all listed products. // 
+  - update on all get buy products. apis like no record found. or something on blacklist products.
+  - whitelist supplier
 

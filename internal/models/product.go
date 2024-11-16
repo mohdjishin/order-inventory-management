@@ -12,6 +12,7 @@ type Product struct {
 	CreatedAt   time.Time `gorm:"autoCreateTime"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
 	InventoryID uint      `gorm:"not null;index"`
+	BlackListed bool      `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
 }
 
 func (Product) TableName() string {

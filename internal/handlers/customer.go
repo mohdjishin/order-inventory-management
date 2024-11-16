@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 )
@@ -33,7 +34,7 @@ func OrderProduct(c fiber.Ctx) error {
 		})
 	}
 
-	userId, ok := c.Locals("userId").(float64)
+	userId, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -94,7 +95,7 @@ func OrderProduct(c fiber.Ctx) error {
 }
 
 func ListOrdersForCustomer(c fiber.Ctx) error {
-	userId, ok := c.Locals("userId").(float64)
+	userId, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

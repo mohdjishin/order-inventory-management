@@ -24,18 +24,20 @@ const (
 )
 
 type User struct {
-	Id        uint   `gorm:"primaryKey" json:"id,omitempty"`             // User ID
-	FirstName string `gorm:"not null" json:"firstName,omitempty"`        // First name cannot be null
-	LastName  string `gorm:"not null" json:"lastName,omitempty"`         // Last name cannot be null
-	Email     string `gorm:"unique;not null" json:"email,omitempty"`     // Email is unique and cannot be null
-	Password  string `gorm:"not null" json:"-"`                          // Password is required, omitted in JSON response
-	Phone     string `gorm:"not null" json:"phone,omitempty"`            // Phone number is required
-	Role      Role   `gorm:"not null" json:"-"`                          // Role is required
-	CreatedAt int64  `gorm:"autoCreateTime" json:"created_at,omitempty"` // Automatically set creation time
-	UpdatedAt int64  `gorm:"autoUpdateTime" json:"updated_at,omitempty"` // Automatically set update time
+	Id        uint   `gorm:"primaryKey" json:"id,omitempty"`
+	FirstName string `gorm:"not null" json:"firstName,omitempty"`
+	LastName  string `gorm:"not null" json:"lastName,omitempty"`
+	Email     string `gorm:"unique;not null" json:"email,omitempty"`
+	Password  string `gorm:"not null" json:"-"`
+	Phone     string `gorm:"not null" json:"phone,omitempty"`
+	Role      Role   `gorm:"not null" json:"-"`
+	CreatedAt int64  `gorm:"autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAt int64  `gorm:"autoUpdateTime" json:"updated_at,omitempty"`
 
-	// This field is used to approve the user by the admin only for suppliers
-	Approved bool `gorm:"default:false" json:"approved"` // Approved is false by default
+	// This field is used to approve the supplier by the admin only for suppliers
+	Approved    bool `gorm:"default:false" json:"approved"`              // Approved is false by default
+	Blacklisted bool `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
+
 }
 
 // TableName specifies the table name for the User model

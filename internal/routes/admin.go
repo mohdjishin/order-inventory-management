@@ -11,6 +11,8 @@ func RegisterAdminRoutes(app fiber.Router) {
 	adminGroup.Post("/approve-supplier/", handlers.ApproveSupplier)
 
 	adminGroup.Get("/approved-suppliers", handlers.ListApprovedSuppliers)
+	// blacklist supplier
+	adminGroup.Post("/blacklist-supplier", handlers.BlacklistSupplier)
 
 	adminGroup.Get("/non-approved-suppliers", handlers.ListNonApprovedSuppliers)
 }

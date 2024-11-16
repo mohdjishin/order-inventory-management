@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 )
 
 func ListProductsCustomer(c fiber.Ctx) error {
@@ -54,7 +55,7 @@ type ProductWithHistory struct {
 
 func GetAllProductsWithPricingHistory(c fiber.Ctx) error {
 	var products []ProductWithHistory
-	userID, ok := c.Locals("userId").(float64)
+	userID, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Failed to extract user ID from context",

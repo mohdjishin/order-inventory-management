@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"github.com/mohdjishin/order-inventory-management/util"
@@ -23,7 +24,7 @@ func CreateSupplier(c fiber.Ctx) error {
 }
 
 func ListOrdersForSupplier(c fiber.Ctx) error {
-	supplierId, ok := c.Locals("userId").(float64)
+	supplierId, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract supplier ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -75,7 +76,7 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 		})
 	}
 
-	supplierID, ok := c.Locals("userId").(float64)
+	supplierID, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract supplier ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

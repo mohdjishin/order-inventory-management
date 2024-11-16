@@ -3,12 +3,13 @@ package models
 import "time"
 
 type Inventory struct {
-	ID        uint      `gorm:"primaryKey"`
-	ProductID uint      `gorm:"not null;index"`
-	Stock     int       `gorm:"not null"`
-	AddedBy   uint      `gorm:"not null"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	BasePrice float64   `gorm:"not null"`
+	ID          uint      `gorm:"primaryKey"`
+	ProductID   uint      `gorm:"not null;index"`
+	Stock       int       `gorm:"not null"`
+	AddedBy     uint      `gorm:"not null"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
+	BasePrice   float64   `gorm:"not null"`
+	BlackListed bool      `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
 	//Initial stock
 	Product Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;"`
 }

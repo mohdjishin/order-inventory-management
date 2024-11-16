@@ -30,6 +30,10 @@ var (
 
 const authorization = "Authorization"
 
+type CtxRoleKey struct{}
+type CtxUserIDKey struct{}
+type CtxEmailKey struct{}
+
 func AuthMiddleware(c fiber.Ctx) error {
 	log.Debug("AuthMiddleware")
 
@@ -77,19 +81,20 @@ func AuthMiddleware(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(ErrInvalidToken)
 	}
 
-	c.Locals("userId", userID)
-	c.Locals("email", email)
-	c.Locals("role", role)
+	c.Locals(CtxUserIDKey{}, userID)
+	c.Locals(CtxEmailKey{}, email)
+	c.Locals(CtxRoleKey{}, role)
 	return c.Next()
 }
 func OnlySuppliers(c fiber.Ctx) error {
-	role, ok := c.Locals("role").(string)
+	role, ok := c.Locals(CtxRoleKey{}).(string)
 	if !ok {
 		log.Error("Failed to extract role from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Failed to extract role from context",
 		})
 	}
+
 	if role != models.SupplierRole.String() {
 		log.Error("User is not a supplier")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -97,17 +102,26 @@ func OnlySuppliers(c fiber.Ctx) error {
 		})
 	}
 
-	userID, ok := c.Locals("userId").(float64)
+	userID, ok := c.Locals(CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Failed to extract user ID from context",
 		})
 	}
-	if err := db.GetDb().Where("id = ? AND role = ? AND approved = ?", userID, models.SupplierRole, true).Error; err != nil {
+
+	var user models.User
+	if err := db.GetDb().First(&user, "id = ? AND role = ? AND approved = ?", userID, models.SupplierRole.String(), true).Error; err != nil {
 		log.Error("Supplier not found or not approved", zap.Error(err))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Supplier not found or not approved",
+		})
+	}
+
+	if user.Blacklisted {
+		log.Error("Supplier is blacklisted")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Supplier is blacklisted",
 		})
 	}
 
@@ -115,7 +129,7 @@ func OnlySuppliers(c fiber.Ctx) error {
 }
 
 func OnlyCustomer(c fiber.Ctx) error {
-	role, ok := c.Locals("role").(string)
+	role, ok := c.Locals(CtxRoleKey{}).(string)
 	if !ok {
 		log.Error("Failed to extract role from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

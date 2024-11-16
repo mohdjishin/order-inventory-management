@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"github.com/mohdjishin/order-inventory-management/util"
@@ -12,7 +13,7 @@ import (
 )
 
 func ListUserInventoryWithProduct(c fiber.Ctx) error {
-	val, ok := c.Locals("userId").(float64)
+	val, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -66,7 +67,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		})
 	}
 
-	userId, ok := c.Locals("userId").(float64)
+	userId, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context", zap.Any("userId", userId))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -187,7 +188,7 @@ func UpdateInventories(c fiber.Ctx) error {
 			"error": "Invalid input",
 		})
 	}
-	userId, ok := c.Locals("userId").(float64)
+	userId, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
 	if !ok {
 		log.Error("Failed to extract user ID from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
