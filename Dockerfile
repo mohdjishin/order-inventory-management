@@ -8,9 +8,9 @@ RUN go mod download
 
 COPY . .
 
-ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+RUN chmod +x ./build.sh
 
-RUN go build -o oim ./cmd/api/*.go
+RUN sh build.sh
 
 FROM alpine:latest
 
@@ -19,6 +19,7 @@ WORKDIR /root/
 COPY --from=builder /app/oim .
 
 COPY --from=builder /app/config.json .
+
 
 EXPOSE 8080
 
