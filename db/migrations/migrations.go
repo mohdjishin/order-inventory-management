@@ -1,6 +1,8 @@
 package migrations
 
 import (
+	"strings"
+
 	"github.com/mohdjishin/order-inventory-management/db"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
@@ -17,7 +19,13 @@ func Run() error {
 		return err
 	}
 	if err := createTrigger(db.GetDb()); err != nil {
+		if !strings.Contains(err.Error(), "already exists") {
+			log.Fatal("failed to create trigger", zap.Error(err))
+			return err
 
+		} else {
+			log.Warn("Trigger already exists, skipping creation.")
+		}
 	}
 	log.Info("Database migration successful")
 	return nil
@@ -69,16 +77,18 @@ func createTrigger(db *gorm.DB) error {
 		EXECUTE FUNCTION adjust_product_price_on_stock_change();
 	`
 
-	// Execute the function creation script
 	if err := db.Exec(triggerFunction).Error; err != nil {
 		log.Error("Error creating trigger function:", zap.Error(err))
 		return err
 	}
 
-	// Execute the trigger creation script
 	if err := db.Exec(createTrigger).Error; err != nil {
-		log.Error("Error creating trigger:", zap.Error(err))
-		return err
+		if strings.Contains(err.Error(), "already exists") {
+			log.Warn("Trigger already exists, skipping creation.")
+		} else {
+			log.Error("Error creating trigger:", zap.Error(err))
+			return err
+		}
 	}
 
 	return nil
