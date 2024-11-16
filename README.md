@@ -1,9 +1,38 @@
 # order-inventory-management
 
+**_Important:_** **Don't worry about database scripts; GORM will handle the migrations. Start by creating a user.**
+
+## Installation and Setup
+
+### Prerequisites
+
+1. Docker
+
+### Steps
+
+1. Clone the repository
+2. Run `docker compose up --build` in the root directory of the project
+
+## Step to run locally without Docker
+
+### Prerequisites
+
+1. Go 
+2. PostgreSQL
+
+### Steps
+
+1. Clone the repository
+2. Set up PostgreSQL and create a database
+3. Update the database configuration in `config.json`
+4. Run `go run cmd/api/*.go` in the root directory of the project
+
+
+
 
 ## Postman Post Response Script
 ```js
-// {baseurl}/users/login
+// {baseurl}/users/login. this is a helper script to save the token in global variable. (make life simpler with scripts)
 var response = pm.response.json();
 
 if (response.data && response.data.token) {
