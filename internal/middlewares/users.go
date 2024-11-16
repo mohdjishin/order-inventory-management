@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	config "github.com/mohdjishin/order-inventory-management/config"
+	"github.com/mohdjishin/order-inventory-management/db"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"go.uber.org/zap"
@@ -95,6 +96,21 @@ func OnlySuppliers(c fiber.Ctx) error {
 			"error": "User is not a supplier",
 		})
 	}
+
+	userID, ok := c.Locals("userId").(float64)
+	if !ok {
+		log.Error("Failed to extract user ID from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Failed to extract user ID from context",
+		})
+	}
+	if err := db.GetDb().Where("id = ? AND role = ? AND approved = ?", userID, models.SupplierRole, true).Error; err != nil {
+		log.Error("Supplier not found or not approved", zap.Error(err))
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Supplier not found or not approved",
+		})
+	}
+
 	return c.Next()
 }
 
