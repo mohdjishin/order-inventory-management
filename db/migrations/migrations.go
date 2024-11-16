@@ -33,14 +33,26 @@ func createTrigger(db *gorm.DB) error {
 				-- Calculate the percentage of remaining stock
 				DECLARE
 					remaining_stock_percentage FLOAT;
+					old_price FLOAT;
+					new_price FLOAT;
 				BEGIN
+					-- Retrieve the old price
+					SELECT price INTO old_price FROM products WHERE id = NEW.product_id;
+
 					-- Calculate the remaining stock percentage
 					remaining_stock_percentage := (NEW.stock::FLOAT / OLD.stock) * 100;
 
-					-- Update the product price based on the remaining stock percentage
+					-- Calculate the new price
+					new_price := old_price * (1 + (100 - remaining_stock_percentage) / 100);
+
+					-- Update the product price
 					UPDATE products
-					SET price = price * (1 + (100 - remaining_stock_percentage) / 100)
+					SET price = new_price
 					WHERE id = NEW.product_id;
+
+					-- Insert into pricing_histories table
+					INSERT INTO pricing_histories (product_id, old_price, new_price, created_at, updated_at)
+					VALUES (NEW.product_id, old_price, new_price, NOW(), NOW());
 				END;
 			END IF;
 			-- Return the new inventory row
@@ -57,11 +69,13 @@ func createTrigger(db *gorm.DB) error {
 		EXECUTE FUNCTION adjust_product_price_on_stock_change();
 	`
 
+	// Execute the function creation script
 	if err := db.Exec(triggerFunction).Error; err != nil {
 		log.Error("Error creating trigger function:", zap.Error(err))
 		return err
 	}
 
+	// Execute the trigger creation script
 	if err := db.Exec(createTrigger).Error; err != nil {
 		log.Error("Error creating trigger:", zap.Error(err))
 		return err

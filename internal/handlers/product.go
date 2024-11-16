@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
 )
@@ -38,4 +40,52 @@ func ListProductsCustomer(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"products": productsWithStock,
 	})
+}
+
+// TODO: custom marshaler for pricing history
+type ProductWithHistory struct {
+	ProductID      uint            `json:"product_id"`
+	Name           string          `json:"name"`
+	Description    string          `json:"description"`
+	Category       string          `json:"category"`
+	CurrentPrice   float64         `json:"current_price"`
+	PricingHistory json.RawMessage `json:"pricing_history"`
+}
+
+func GetAllProductsWithPricingHistory(c fiber.Ctx) error {
+	var products []ProductWithHistory
+	userID, ok := c.Locals("userId").(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Failed to extract user ID from context",
+		})
+	}
+	query := `
+		SELECT 
+			p.id AS product_id,
+			p.name,
+			p.description,
+			p.category,
+			p.price AS current_price,
+			COALESCE(
+				(SELECT JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'id', ph.id,
+						'oldPrice', ph.old_price,
+						'newPrice', ph.new_price,
+						'pricingDate', ph.created_at
+					)
+				) FROM pricing_histories ph WHERE ph.product_id = p.id), '[]') AS pricing_history
+		FROM 
+			products p
+		WHERE 
+			p.added_by = ?`
+
+	if err := db.GetDb().Raw(query, userID).Scan(&products).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch products with pricing history",
+		})
+	}
+
+	return c.JSON(products)
 }

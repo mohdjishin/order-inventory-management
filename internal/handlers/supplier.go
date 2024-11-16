@@ -116,6 +116,7 @@ func ApproveRejectOrder(c fiber.Ctx) error {
 			})
 		}
 		inventory.Stock = inventory.Stock - order.Quantity
+
 		if err := db.GetDb().Save(&inventory).Error; err != nil {
 			log.Error("Failed to update inventory stock", zap.Any("error", err))
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

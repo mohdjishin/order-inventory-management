@@ -78,7 +78,6 @@ func createUser(c fiber.Ctx, req CreateUserRequest, role models.Role) error {
 }
 
 func UpdateInventory(req *UpdateInventoryRequest, userID uint) error {
-
 	tx := db.GetDb().Begin()
 
 	defer func() {
@@ -90,14 +89,13 @@ func UpdateInventory(req *UpdateInventoryRequest, userID uint) error {
 	var inventory models.Inventory
 	if err := tx.Where("product_id = ? AND added_by = ?", req.ProductID, userID).First(&inventory).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			// If not found, return an error
-			return errors.New("inventory not found for the given product")
+			return errors.New("inventory not found for the given product and user")
 		}
 		tx.Rollback()
 		return err
 	}
-	inventory.Stock += req.NewStock
 
+	inventory.Stock += req.NewStock
 	if req.NewPrice > 0 {
 		inventory.BasePrice = req.NewPrice
 	}
@@ -113,12 +111,26 @@ func UpdateInventory(req *UpdateInventoryRequest, userID uint) error {
 		return fmt.Errorf("product not found: %w", err)
 	}
 
-	product.Price = inventory.BasePrice
+	if req.NewPrice > 0 && product.Price != req.NewPrice {
+		pricingHistory := models.PricingHistory{
+			ProductID: product.ID,
+			OldPrice:  product.Price,
+			NewPrice:  req.NewPrice,
+		}
+		if err := tx.Create(&pricingHistory).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to create pricing history: %w", err)
+		}
+
+		product.Price = req.NewPrice
+	}
+
 	if err := tx.Save(&product).Error; err != nil {
 		tx.Rollback()
 		return fmt.Errorf("failed to update product price: %w", err)
 	}
 
+	// Commit the transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return err

@@ -1,14 +1,16 @@
 package models
 
+import "time"
+
 type Inventory struct {
-	ID        uint    `gorm:"primaryKey"`
-	ProductID uint    `gorm:"not null;index"` // Foreign key to Product
-	Stock     int     `gorm:"not null"`       // Current stock for the product
-	AddedBy   uint    `gorm:"not null"`       // User who added/updated the inventory
-	UpdatedAt int64   `gorm:"autoUpdateTime"` // Automatically set update time
-	BasePrice float64 `gorm:"not null"`
+	ID        uint      `gorm:"primaryKey"`
+	ProductID uint      `gorm:"not null;index"`
+	Stock     int       `gorm:"not null"`
+	AddedBy   uint      `gorm:"not null"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	BasePrice float64   `gorm:"not null"`
 	//Initial stock
-	Product Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;"` // Ensures Product deletion cascades
+	Product Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;"`
 }
 
 // TableName overrides the default table name (inventories) if necessary

@@ -135,6 +135,21 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 			"message": "Failed to update product with inventory ID",
 		})
 	}
+	ph := models.PricingHistory{
+		ProductID: product.ID,
+		OldPrice:  product.Price,
+		NewPrice:  product.Price,
+		CreatedAt: product.CreatedAt,
+		UpdatedAt: product.UpdatedAt,
+	}
+	if err := tx.Create(&ph).Error; err != nil {
+		tx.Rollback()
+		log.Error("Failed to create pricing history", zap.Error(err))
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to create pricing history",
+		})
+	}
 
 	if err := tx.Commit().Error; err != nil {
 		log.Error("Failed to commit transaction", zap.Error(err))

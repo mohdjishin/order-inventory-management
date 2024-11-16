@@ -19,6 +19,9 @@ func RegisterSupplierRoutes(supplierGroup fiber.Router) {
 	inventoryGroup.Get("/", handlers.ListUserInventoryWithProduct)
 	inventoryGroup.Put("/", handlers.UpdateInventories)
 
+	productGroups := supplierGroup.Group("/product")
+	productGroups.Get("/with-pricing-history", handlers.GetAllProductsWithPricingHistory)
+
 	// supplierGroup.Get("/orders", handlers.ListOrdersForSupplier)
 
 	// productGroup.Post("/", handlers.AddProduct)

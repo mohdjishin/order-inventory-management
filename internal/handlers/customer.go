@@ -20,13 +20,13 @@ func CreateCustomer(c fiber.Ctx) error {
 	return createUser(c, req, models.CustomerRole)
 }
 
-type BuyProductRequest struct {
+type OrderProductRequest struct {
 	ProductID uint `json:"productId" validate:"required"`
 	Quantity  int  `json:"quantity" validate:"required,gt=0"`
 }
 
-func BuyProduct(c fiber.Ctx) error {
-	var req BuyProductRequest
+func OrderProduct(c fiber.Ctx) error {
+	var req OrderProductRequest
 	if err := json.Unmarshal(c.Body(), &req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid input",
@@ -90,5 +90,27 @@ func BuyProduct(c fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Order placed successfully. Awaiting supplier approval.",
 		"order":   order,
+	})
+}
+
+func ListOrdersForCustomer(c fiber.Ctx) error {
+	userId, ok := c.Locals("userId").(float64)
+	if !ok {
+		log.Error("Failed to extract user ID from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to extract user ID from context",
+		})
+	}
+
+	var orders []models.Order
+	if err := db.GetDb().Where("user_id = ?", userId).Find(&orders).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch orders",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"orders": orders,
 	})
 }

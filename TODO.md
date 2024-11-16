@@ -16,6 +16,10 @@ TODOS:
 - List all products by price range
 - List all products by rating
 - List all products by stock availability
+
+
+
+- payment is not implementing. dummy project (asuming payment is done ofline or COD or something else)
 <!-- complete this before nov 16 - 9pm -->
 
 
