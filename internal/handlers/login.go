@@ -32,6 +32,7 @@ func Login(c fiber.Ctx) error {
 	if validationErrors, err := util.ValidateStruct(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":  "Validation failed",
+			"status": "error",
 			"fields": validationErrors,
 		})
 	}

@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	"github.com/mohdjishin/order-inventory-management/util"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type CreateUserRequest struct {
@@ -19,6 +23,7 @@ type CreateUserRequest struct {
 func createUser(c fiber.Ctx, req CreateUserRequest, role models.Role) error {
 	if validationErrors, err := util.ValidateStruct(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "error",
 			"error":  "Validation failed",
 			"fields": validationErrors,
 		})
@@ -70,4 +75,54 @@ func createUser(c fiber.Ctx, req CreateUserRequest, role models.Role) error {
 			"role":      user.Role.String(),
 		},
 	})
+}
+
+func UpdateInventory(req *UpdateInventoryRequest, userID uint) error {
+
+	tx := db.GetDb().Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	var inventory models.Inventory
+	if err := tx.Where("product_id = ? AND added_by = ?", req.ProductID, userID).First(&inventory).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// If not found, return an error
+			return errors.New("inventory not found for the given product")
+		}
+		tx.Rollback()
+		return err
+	}
+	inventory.Stock += req.NewStock
+
+	if req.NewPrice > 0 {
+		inventory.BasePrice = req.NewPrice
+	}
+
+	if err := tx.Save(&inventory).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	var product models.Product
+	if err := tx.Where("id = ?", req.ProductID).First(&product).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("product not found: %w", err)
+	}
+
+	product.Price = inventory.BasePrice
+	if err := tx.Save(&product).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to update product price: %w", err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
 }

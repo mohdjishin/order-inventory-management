@@ -32,11 +32,12 @@ func init() {
 			OutputPaths:      []string{"stdout"},
 			ErrorOutputPaths: []string{"stderr"},
 			EncoderConfig: zapcore.EncoderConfig{
-				TimeKey:        "time",
-				LevelKey:       "level",
-				NameKey:        "logger",
-				CallerKey:      "caller",
-				MessageKey:     "msg",
+				TimeKey:    "time",
+				LevelKey:   "level",
+				NameKey:    "logger",
+				CallerKey:  "caller",
+				MessageKey: "msg",
+
 				LineEnding:     zapcore.DefaultLineEnding,
 				EncodeLevel:    zapcore.CapitalLevelEncoder, // INFO, ERROR, etc.
 				EncodeTime:     zapcore.ISO8601TimeEncoder,  // Human-readable time format

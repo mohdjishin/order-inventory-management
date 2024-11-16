@@ -10,6 +10,7 @@ func RegisterCustomerRoutes(customerGroup fiber.Router) {
 
 	//  list products
 	customerGroup.Use(middleware.AuthMiddleware)
+	customerGroup.Use(middleware.OnlyCustomer)
 	customerGroup.Get("/products", handlers.ListProductsCustomer)
 	customerGroup.Post("/buy", handlers.BuyProduct)
 

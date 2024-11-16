@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	config "github.com/mohdjishin/order-inventory-management/config"
+	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"go.uber.org/zap"
 )
@@ -78,5 +79,38 @@ func AuthMiddleware(c fiber.Ctx) error {
 	c.Locals("userId", userID)
 	c.Locals("email", email)
 	c.Locals("role", role)
+	return c.Next()
+}
+func OnlySuppliers(c fiber.Ctx) error {
+	role, ok := c.Locals("role").(string)
+	if !ok {
+		log.Error("Failed to extract role from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Failed to extract role from context",
+		})
+	}
+	if role != models.SupplierRole.String() {
+		log.Error("User is not a supplier")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "User is not a supplier",
+		})
+	}
+	return c.Next()
+}
+
+func OnlyCustomer(c fiber.Ctx) error {
+	role, ok := c.Locals("role").(string)
+	if !ok {
+		log.Error("Failed to extract role from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Failed to extract role from context",
+		})
+	}
+	if role != models.CustomerRole.String() {
+		log.Error("User is not a customer")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "User is not a customer",
+		})
+	}
 	return c.Next()
 }

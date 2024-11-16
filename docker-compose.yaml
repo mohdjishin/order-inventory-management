@@ -7,7 +7,6 @@ services:
             - "8080:8080"
         environment:
             - PORT=8080 # config.json
-            # - JWT_STRING=SplitWiseTestJwtSignString  # config.json
             - LOG_LEVEL=DEBUG # DEBUG, INFO, WARN, ERROR
             - DSN=host=db user=myuser password=mypassword dbname=mydb port=5432 sslmode=disable
         depends_on:

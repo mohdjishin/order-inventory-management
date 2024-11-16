@@ -114,6 +114,7 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		Stock:     input.Stock,
 		AddedBy:   uint(userId),
 		ProductID: product.ID,
+		BasePrice: input.Price,
 	}
 
 	if err := tx.Create(&inventory).Error; err != nil {
@@ -155,5 +156,43 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 			"price":        product.Price,
 			"stock":        inventory.Stock,
 		},
+	})
+}
+
+type UpdateInventoryRequest struct {
+	ProductID uint    `json:"productId" validate:"required"`
+	NewStock  int     `json:"newStock" validate:"required,gt=0"`
+	NewPrice  float64 `json:"newPrice" validate:"required,gt=0"`
+}
+
+func UpdateInventories(c fiber.Ctx) error {
+	var req UpdateInventoryRequest
+	if err := json.Unmarshal(c.Body(), &req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid input",
+		})
+	}
+	userId, ok := c.Locals("userId").(float64)
+	if !ok {
+		log.Error("Failed to extract user ID from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to extract user ID from context",
+		})
+	}
+	validationFields, err := util.ValidateStruct(req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":  "Validation failed",
+			"status": "error",
+			"fields": validationFields,
+		})
+	}
+	if err := UpdateInventory(&req, uint(userId)); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Inventory updated successfully",
 	})
 }

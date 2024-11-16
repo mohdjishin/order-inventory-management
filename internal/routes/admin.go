@@ -7,7 +7,7 @@ import (
 
 func RegisterAdminRoutes(app fiber.Router) {
 	adminGroup := app.Group("/")
-
+	// TODO MIDDLEWARES tobe implemented.
 	adminGroup.Post("/approve-supplier/", handlers.ApproveSupplier)
 
 	adminGroup.Get("/approved-suppliers", handlers.ListApprovedSuppliers)
