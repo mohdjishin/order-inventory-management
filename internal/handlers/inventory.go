@@ -110,11 +110,10 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		})
 	}
 
-	// Create Inventory
 	inventory := models.Inventory{
 		Stock:     input.Stock,
 		AddedBy:   uint(userId),
-		ProductID: product.ID, // Link inventory to product
+		ProductID: product.ID,
 	}
 
 	if err := tx.Create(&inventory).Error; err != nil {
@@ -126,7 +125,6 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		})
 	}
 
-	// Update Product to link to the Inventory
 	product.InventoryID = inventory.ID
 	if err := tx.Save(&product).Error; err != nil {
 		tx.Rollback()
@@ -137,7 +135,6 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		})
 	}
 
-	// Commit Transaction
 	if err := tx.Commit().Error; err != nil {
 		log.Error("Failed to commit transaction", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -146,7 +143,6 @@ func AddInventoryAndProduct(c fiber.Ctx) error {
 		})
 	}
 
-	// Successfully created Product and Inventory
 	log.Info("Product and Inventory added successfully", zap.Any("product", product), zap.Any("inventory", inventory))
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status":  "success",
