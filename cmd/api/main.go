@@ -22,7 +22,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(logger.New())
-	app.Get("/version", handlers.GetVersion)
+	app.Get("/info", handlers.GetVersion)
 	app.Get("/health", handlers.HealthCheck)
 	userGroup := app.Group("/user")
 	routes.RegisterUserRoutes(userGroup)
