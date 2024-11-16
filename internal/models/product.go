@@ -9,6 +9,7 @@ type Product struct {
 	AddedBy     uint    `gorm:"not null"`        // User who added the product
 	CreatedAt   int64   `gorm:"autoCreateTime"`  // Automatically set creation time
 	UpdatedAt   int64   `gorm:"autoUpdateTime"`  // Automatically set update time
+	InventoryID uint    `gorm:"not null;index"`  // Foreign key to Inventory
 }
 
 // TableName overrides the default table name (products) if necessary

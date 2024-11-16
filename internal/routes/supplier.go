@@ -7,9 +7,19 @@ import (
 )
 
 func RegisterSupplierRoutes(supplierGroup fiber.Router) {
+	supplierGroup.Use(middleware.AuthMiddleware)
 
-	productGroup := supplierGroup.Group("/product")
-	productGroup.Use(middleware.AuthMiddleware)
-	productGroup.Post("/", handlers.AddProduct)
+	orderSGroup := supplierGroup.Group("/orders")
+	orderSGroup.Get("/", handlers.ListOrdersForSupplier)
+	orderSGroup.Put("/approve-reject", handlers.ApproveRejectOrder)
+
+	productGroup := supplierGroup.Group("/inventory")
+	productGroup.Post("/", handlers.AddInventoryAndProduct)
+	productGroup.Get("/", handlers.ListUserInventoryWithProduct)
+
+	// supplierGroup.Get("/orders", handlers.ListOrdersForSupplier)
+
+	// productGroup.Post("/", handlers.AddProduct)
+	// productGroup.Get("/", handlers.ListProducts)
 
 }

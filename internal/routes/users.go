@@ -10,5 +10,6 @@ func RegisterUserRoutes(userGroup fiber.Router) {
 	userGroup.Post("/login", handlers.Login)
 
 	userGroup.Post("/supplier", handlers.CreateSupplier)
+	userGroup.Post("/customer", handlers.CreateCustomer)
 
 }
