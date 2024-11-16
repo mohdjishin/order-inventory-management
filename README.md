@@ -25,12 +25,18 @@
 1. Clone the repository
 2. Set up PostgreSQL and create a database
 3. Update the database configuration in `config.json`
-4. Run `go run cmd/api/*.go` in the root directory of the project
+4. Run 1`./build.sh` in the root directory of the project
+5. Run `./oim` to start the server
+```bash
+$ ./build.sh
+$ ./oim
+```
 
 
 
 
-## Postman Post Response Script
+
+## Postman Post Response Script (Helper Script)
 ```js
 // {baseurl}/users/login. this is a helper script to save the token in global variable. (make life simpler with scripts)
 var response = pm.response.json();
@@ -54,5 +60,18 @@ if (response.data && response.data.token) {
     console.log("Token not found in the response");
 }
 
-
 ```
+
+
+## Pre-Activity Checklist
+
+- Use the following endpoints to verify the service status and details:
+
+  1. **Health Check**: Confirms if the service is running:
+     ```bash
+     curl -X GET http://localhost:8080/health
+     ```
+  2. **Info**: Displays server information:
+     ```bash
+     curl -X GET http://localhost:8080/info
+     ```
