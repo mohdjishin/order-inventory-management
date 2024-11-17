@@ -1,12 +1,15 @@
 package migrations
 
 import (
+	"encoding/base64"
+	"errors"
 	"strings"
 
 	"github.com/mohdjishin/order-inventory-management/db"
 	"github.com/mohdjishin/order-inventory-management/internal/models"
 	log "github.com/mohdjishin/order-inventory-management/logger"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -18,15 +21,10 @@ func Run() error {
 		log.Fatal("failed to migrate database", zap.Error(err))
 		return err
 	}
-	if err := createTrigger(db.GetDb()); err != nil {
-		if !strings.Contains(err.Error(), "already exists") {
-			log.Fatal("failed to create trigger", zap.Error(err))
-			return err
-
-		} else {
-			log.Warn("Trigger already exists, skipping creation.")
-		}
+	if err := initialSetup(); err != nil {
+		log.Fatal("failed to run initial setup", zap.Error(err))
 	}
+
 	log.Info("Database migration successful")
 	return nil
 }
@@ -91,5 +89,65 @@ func createTrigger(db *gorm.DB) error {
 		}
 	}
 
+	return nil
+}
+
+func initialSetup() error {
+	log.Info("Creating initial admin user")
+
+	var count int64
+	err := db.GetDb().
+		Model(&models.User{}).
+		Where("role = ?", models.SuperAdmin).
+		Count(&count).Error
+	if err != nil {
+		log.Error("Failed to check if super admin user exists", zap.Error(err))
+		return err
+	}
+
+	if count > 0 {
+		log.Info("Super admin user already exists, skipping creation")
+		return nil
+	}
+
+	decordedP, err := base64.StdEncoding.DecodeString("cGFzc3dPcmRAMTIz")
+	if err != nil {
+		log.Error("Failed to decode the password", zap.Error(err))
+		return errors.New("unable to decode password")
+	}
+
+	hp, err := bcrypt.GenerateFromPassword(decordedP, bcrypt.DefaultCost)
+	if err != nil {
+		log.Error("Failed to hash the password", zap.Error(err))
+		return errors.New("unable to generate password hash")
+	}
+
+	adminUser := models.User{
+		Email:     "admin@oim.com",
+		Password:  string(hp),
+		Role:      models.SuperAdmin,
+		FirstName: "Super",
+		LastName:  "Admin",
+		Phone:     "9605384376",
+	}
+
+	if err := db.GetDb().Create(&adminUser).Error; err != nil {
+		log.Error("Failed to create initial admin user", zap.Error(err))
+		return err
+	}
+
+	log.Info("Initial super admin user created successfully")
+
+	log.Info("Creating trigger for adjusting product price on stock change")
+	//  creating trigger only once per db
+	if err := createTrigger(db.GetDb()); err != nil {
+		if !strings.Contains(err.Error(), "already exists") {
+			log.Fatal("failed to create trigger", zap.Error(err))
+			return err
+
+		} else {
+			log.Warn("Trigger already exists, skipping creation.")
+		}
+	}
 	return nil
 }
