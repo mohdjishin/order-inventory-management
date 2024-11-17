@@ -16,7 +16,13 @@ import (
 func Run() error {
 	log.Info("Running database migrations")
 
-	err := db.GetDb().AutoMigrate(&models.Product{}, &models.Order{}, &models.Inventory{}, &models.PricingHistory{}, &models.User{})
+	err := db.GetDb().AutoMigrate(
+		&models.Product{},
+		&models.Order{},
+		&models.Inventory{},
+		&models.PricingHistory{},
+		&models.User{},
+		&models.ShipmentStatus{})
 	if err != nil {
 		log.Fatal("failed to migrate database", zap.Error(err))
 		return err
@@ -74,6 +80,15 @@ func createTrigger(db *gorm.DB) error {
 		WHEN (NEW.stock < OLD.stock)
 		EXECUTE FUNCTION adjust_product_price_on_stock_change();
 	`
+
+	if err := db.Exec(`
+	ALTER TABLE orders
+	ADD CONSTRAINT shipping_status_check CHECK (
+		shipping_state IN (1, 2, 3, 4, 5)
+	);`).Error; err != nil {
+		log.Error("Failed to add check constraint for shipping state", zap.Error(err))
+		return err
+	}
 
 	if err := db.Exec(triggerFunction).Error; err != nil {
 		log.Error("Error creating trigger function:", zap.Error(err))
