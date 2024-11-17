@@ -105,3 +105,9 @@ There is currently no endpoint available for creating an Admin. However, the sys
 Here are the default credentials for the admin user:
 - **Email**: `admin@oim.com`
 - **Password**: `passwOrd@123`
+
+
+
+## Postman Collection
+
+The Postman collection is available under `./postman/IOM.postman_collection.json`.
