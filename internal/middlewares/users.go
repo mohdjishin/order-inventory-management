@@ -111,7 +111,7 @@ func OnlySuppliers(c fiber.Ctx) error {
 	}
 
 	var user models.User
-	if err := db.GetDb().First(&user, "id = ? AND role = ? AND approved = ?", userID, models.SupplierRole.String(), true).Error; err != nil {
+	if err := db.GetDb().First(&user, "id = ? AND role = ? AND approved = ?", userID, models.SupplierRole, true).Error; err != nil {
 		log.Error("Supplier not found or not approved", zap.Error(err))
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Supplier not found or not approved",

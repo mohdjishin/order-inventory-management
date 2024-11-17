@@ -32,6 +32,7 @@ func ListProductsCustomer(c fiber.Ctx) error {
 				ELSE 'In Stock'
 			END AS availablity`).
 		Joins("left join inventories on inventories.product_id = products.id").
+		Where("products.black_listed = ? AND inventories.black_listed = ?", false, false).
 		Scan(&productsWithStock).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to retrieve products with stock",

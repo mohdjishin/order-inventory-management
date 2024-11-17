@@ -7,8 +7,8 @@ type Order struct {
 	Quantity   int     `gorm:"not null"`
 	TotalPrice float64 `gorm:"not null"`
 	Status     string  `gorm:"default:'PENDING'"`
-	CreatedAt  int64   `gorm:"autoCreateTime"`
-	UpdatedAt  int64   `gorm:"autoUpdateTime"`
+	CreatedAt  int64   `gorm:"autoCreateTime"` // change to time.Time
+	UpdatedAt  int64   `gorm:"autoUpdateTime" json:"-"`
 	SupplierID uint    `gorm:"not null;index"`
 
 	User     User    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"-"`

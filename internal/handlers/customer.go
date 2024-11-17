@@ -78,7 +78,7 @@ func OrderProduct(c fiber.Ctx) error {
 		ProductID:  req.ProductID,
 		Quantity:   req.Quantity,
 		TotalPrice: totalPrice,
-		Status:     "PENDING",
+		Status:     pending,
 		SupplierID: supplier.Id,
 	}
 

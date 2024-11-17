@@ -142,6 +142,16 @@ func BlacklistSupplier(c fiber.Ctx) error {
 			"error": "Failed to find supplier's inventory",
 		})
 	}
+
+	if err := tx.Model(&models.Order{}).
+		Where("supplier_id = ? AND status = ?", req.Id, pending).
+		Update("status", rejected).Error; err != nil {
+		tx.Rollback()
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to blacklist inventory",
+		})
+	}
+
 	if len(inventory) == 0 {
 		if err := tx.Commit().Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -155,7 +165,7 @@ func BlacklistSupplier(c fiber.Ctx) error {
 
 	if err := tx.Model(&models.Inventory{}).
 		Where("added_by = ?", supplier.Id).
-		Update("blacklisted", true).Error; err != nil {
+		Update("black_listed", true).Error; err != nil {
 		tx.Rollback()
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to blacklist inventory",
@@ -183,7 +193,7 @@ func BlacklistSupplier(c fiber.Ctx) error {
 
 	if err := tx.Model(&models.Product{}).
 		Where("added_by = ?", supplier.Id).
-		Update("blacklisted", true).Error; err != nil {
+		Update("black_listed", true).Error; err != nil {
 		tx.Rollback()
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to blacklist inventory",

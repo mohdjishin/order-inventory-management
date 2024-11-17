@@ -61,6 +61,7 @@ func ListOrdersForSupplier(c fiber.Ctx) error {
 const (
 	approved = "APPROVED"
 	rejected = "REJECTED"
+	pending  = "PENDING"
 )
 
 type ApproveRejectOrderRequest struct {
