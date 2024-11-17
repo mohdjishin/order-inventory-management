@@ -1,6 +1,6 @@
 # order-inventory-management
 
-**_Important:_** **Don't worry about database scripts; GORM will handle the migrations. Start by creating a user.**
+**_Important:_** **Don't worry about database scripts; GORM will handle the migrations.**
 
 ## Installation and Setup
 
@@ -36,22 +36,31 @@ $ ./oim
 
 
 
+
 ## Postman Post Response Script (Helper Script)
 ```js
 // {baseurl}/users/login. this is a helper script to save the token in global variable. (make life simpler with scripts)
-var response = pm.response.json();
+const response = pm.response.json();
 
 if (response.data && response.data.token) {
-    if (response.data.user && response.data.user.role) {
-       
-        if (response.data.user.role === 'supplier') {
-            pm.globals.set("sup_access_token", response.data.token);
-            console.log("Supplier token saved to global variable 'sup_access_token':", response.data.token);
-        } else if (response.data.user.role === 'customer') {
-            pm.globals.set("cust_access_token", response.data.token);
-            console.log("Customer token saved to global variable 'cust_access_token':", response.data.token);
-        } else {
-            console.log("Unknown role:", response.data.user.role);
+    const user = response.data.user;
+
+    if (user && user.role) {
+        switch (user.role) {
+            case 'supplier':
+                pm.globals.set("sup_access_token", response.data.token);
+                console.log("Supplier token saved to global variable 'sup_access_token':", response.data.token);
+                break;
+            case 'customer':
+                pm.globals.set("cust_access_token", response.data.token);
+                console.log("Customer token saved to global variable 'cust_access_token':", response.data.token);
+                break;
+            case 'admin':
+                pm.globals.set("adm_access_token", response.data.token);
+                console.log("Admin token saved to global variable 'adm_access_token':", response.data.token);
+                break;
+            default:
+                console.log("Unknown role:", user.role);
         }
     } else {
         console.log("User role is missing or null");
@@ -60,7 +69,11 @@ if (response.data && response.data.token) {
     console.log("Token not found in the response");
 }
 
+//  use these global variables in the headers like this bearer {{sup_access_token}} or in authorization tab. 
 ```
+
+
+
 
 
 ## Pre-Activity Checklist
@@ -75,3 +88,20 @@ if (response.data && response.data.token) {
      ```bash
      curl -X GET http://localhost:8080/info
      ```
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+## Missing Admin Registration Endpoint?
+
+It seems like there isn't a dedicated **Admin Registration** endpoint in this project. However, the system is designed to automatically create a default **Super Admin** user during the initial setup if no admin exists in the database.
+
+Here are the default credentials for the admin user:
+- **Email**: `admin@oim.com`
+- **Password**: `passwOrd@123`
