@@ -3,6 +3,6 @@
     "LogLevel": "debug",
     "LogFile": "app.log",
     "port": ":8080",
-    "jwtSecret":"JwtSignString"
+    "jwtSecret":"SplitWiseTestJwtSignString"
   }
   
