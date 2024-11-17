@@ -122,13 +122,13 @@ func BlacklistSupplier(c fiber.Ctx) error {
 			"error": "Supplier not found",
 		})
 	}
-	if supplier.Blacklisted {
+	if supplier.BlackListed {
 		tx.Rollback()
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Supplier is already blacklisted",
 		})
 	}
-	supplier.Blacklisted = true
+	supplier.BlackListed = true
 	if err := tx.Save(&supplier).Error; err != nil {
 		tx.Rollback()
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

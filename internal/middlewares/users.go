@@ -118,7 +118,7 @@ func OnlySuppliers(c fiber.Ctx) error {
 		})
 	}
 
-	if user.Blacklisted {
+	if user.BlackListed {
 		log.Error("Supplier is blacklisted")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Supplier is blacklisted",

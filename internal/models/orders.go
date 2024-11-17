@@ -1,15 +1,17 @@
 package models
 
+import "time"
+
 type Order struct {
-	ID         uint    `gorm:"primaryKey"`
-	UserID     uint    `gorm:"not null;index"` // Foreign key for User
-	ProductID  uint    `gorm:"not null;index"` // Foreign key for Product
-	Quantity   int     `gorm:"not null"`
-	TotalPrice float64 `gorm:"not null"`
-	Status     string  `gorm:"default:'PENDING'"`
-	CreatedAt  int64   `gorm:"autoCreateTime"` // change to time.Time
-	UpdatedAt  int64   `gorm:"autoUpdateTime" json:"-"`
-	SupplierID uint    `gorm:"not null;index"`
+	ID         uint      `gorm:"primaryKey"`
+	UserID     uint      `gorm:"not null;index"` // Foreign key for User
+	ProductID  uint      `gorm:"not null;index"` // Foreign key for Product
+	Quantity   int       `gorm:"not null"`
+	TotalPrice float64   `gorm:"not null"`
+	Status     string    `gorm:"default:'PENDING'"`
+	CreatedAt  time.Time `gorm:"autoCreateTime"` // change to time.Time
+	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"-"`
+	SupplierID uint      `gorm:"not null;index"`
 
 	User     User    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"-"`
 	Product  Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;"  json:"-"`

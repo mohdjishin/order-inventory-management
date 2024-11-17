@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Role uint
 
 func (r Role) String() string {
@@ -24,19 +26,19 @@ const (
 )
 
 type User struct {
-	Id        uint   `gorm:"primaryKey" json:"id,omitempty"`
-	FirstName string `gorm:"not null" json:"firstName,omitempty"`
-	LastName  string `gorm:"not null" json:"lastName,omitempty"`
-	Email     string `gorm:"unique;not null" json:"email,omitempty"`
-	Password  string `gorm:"not null" json:"-"`
-	Phone     string `gorm:"not null" json:"phone,omitempty"`
-	Role      Role   `gorm:"not null" json:"-"`
-	CreatedAt int64  `gorm:"autoCreateTime" json:"created_at,omitempty"`
-	UpdatedAt int64  `gorm:"autoUpdateTime" json:"updated_at,omitempty"`
+	Id        uint      `gorm:"primaryKey" json:"id,omitempty"`
+	FirstName string    `gorm:"not null" json:"firstName,omitempty"`
+	LastName  string    `gorm:"not null" json:"lastName,omitempty"`
+	Email     string    `gorm:"unique;not null" json:"email,omitempty"`
+	Password  string    `gorm:"not null" json:"-"`
+	Phone     string    `gorm:"not null" json:"phone,omitempty"`
+	Role      Role      `gorm:"not null" json:"-"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at,omitempty"`
 
 	// This field is used to approve the supplier by the admin only for suppliers
 	Approved    bool `gorm:"default:false" json:"approved"`              // Approved is false by default
-	Blacklisted bool `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
+	BlackListed bool `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
 
 }
 
