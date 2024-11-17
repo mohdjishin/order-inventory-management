@@ -86,6 +86,7 @@ func AuthMiddleware(c fiber.Ctx) error {
 	c.Locals(CtxRoleKey{}, role)
 	return c.Next()
 }
+
 func OnlySuppliers(c fiber.Ctx) error {
 	role, ok := c.Locals(CtxRoleKey{}).(string)
 	if !ok {

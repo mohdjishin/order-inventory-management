@@ -18,6 +18,7 @@ func RegisterSupplierRoutes(supplierGroup fiber.Router) {
 	inventoryGroup.Post("/", handlers.AddInventoryAndProduct)
 	inventoryGroup.Get("/", handlers.ListUserInventoryWithProduct)
 	inventoryGroup.Put("/", handlers.UpdateInventories)
+	inventoryGroup.Delete("/:id", handlers.DeleteInventories)
 
 	productGroups := supplierGroup.Group("/product")
 	productGroups.Get("/with-pricing-history", handlers.GetAllProductsWithPricingHistory)

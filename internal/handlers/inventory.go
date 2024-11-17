@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/db"
@@ -210,5 +211,69 @@ func UpdateInventories(c fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "Inventory updated successfully",
+	})
+}
+
+func DeleteInventories(c fiber.Ctx) error {
+	// Parse inventory ID from the request params
+	inventoryID, err := strconv.Atoi(c.Params("id"))
+	if err != nil || inventoryID <= 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":  "Invalid inventory ID",
+			"status": "error",
+		})
+	}
+
+	userID, ok := c.Locals(middleware.CtxUserIDKey{}).(float64)
+	if !ok {
+		log.Error("Failed to extract user ID from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error":  "Unauthorized access",
+			"status": "error",
+		})
+	}
+	//  check inventory belongs to user
+	inventory := models.Inventory{}
+	if err := db.GetDb().Where("id = ? AND added_by = ?", inventoryID, userID).First(&inventory).Error; err != nil {
+		log.Error("Failed to find inventory", zap.Int("inventoryID", inventoryID), zap.Error(err))
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error":  "Inventory not found",
+			"status": "error",
+		})
+	}
+
+	tx := db.GetDb().Begin()
+
+	if err := tx.Where("id = ? AND added_by = ?", inventoryID, userID).
+		Delete(&models.Inventory{}).Error; err != nil {
+		log.Error("Failed to delete inventory", zap.Int("inventoryID", inventoryID), zap.Error(err))
+		tx.Rollback()
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":  "Failed to delete inventory",
+			"status": "error",
+		})
+	}
+
+	if err := tx.Where("inventory_id = ? AND added_by = ?", inventoryID, userID).
+		Delete(&models.Product{}).Error; err != nil {
+		log.Error("Failed to delete associated products", zap.Int("inventoryID", inventoryID), zap.Error(err))
+		tx.Rollback()
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":  "Failed to delete associated products",
+			"status": "error",
+		})
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Error("Failed to commit transaction", zap.Error(err))
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":  "Failed to complete the transaction",
+			"status": "error",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Inventory and associated products deleted successfully",
+		"status":  "success",
 	})
 }
