@@ -10,11 +10,11 @@ func (r Role) String() string {
 func GetRoleID(s string) uint {
 
 	if s == "admin" {
-		return 0
-	} else if s == "customer" {
 		return 1
-	} else if s == "supplier" {
+	} else if s == "customer" {
 		return 2
+	} else if s == "supplier" {
+		return 3
 	}
 	return 0
 }

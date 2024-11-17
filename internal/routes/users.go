@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/mohdjishin/order-inventory-management/internal/handlers"
+	middleware "github.com/mohdjishin/order-inventory-management/internal/middlewares"
 )
 
 func RegisterUserRoutes(userGroup fiber.Router) {
@@ -11,7 +12,7 @@ func RegisterUserRoutes(userGroup fiber.Router) {
 
 	userGroup.Post("/supplier", handlers.CreateSupplier)
 	userGroup.Post("/customer", handlers.CreateCustomer)
-
-	// userGroup.Post("/change-password", handlers.ChangePassword)
+	userGroup.Use(middleware.AuthMiddleware)
+	userGroup.Post("/change-password", handlers.ChangePassword)
 
 }
