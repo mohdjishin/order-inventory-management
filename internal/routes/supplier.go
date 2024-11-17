@@ -12,6 +12,9 @@ func RegisterSupplierRoutes(supplierGroup fiber.Router) {
 	orderSGroup := supplierGroup.Group("/orders")
 	orderSGroup.Get("/", handlers.ListOrdersForSupplier)
 	orderSGroup.Put("/approve-reject", handlers.ApproveRejectOrder)
+	orderSGroup.Put("/update-delivery-status", handlers.UpdateDeliveryStatus)
+	orderSGroup.Get("/return-requests", handlers.ListReturnRequests)
+	orderSGroup.Put("/return-requests/approve-reject", handlers.ApproveRejectReturnRequesthandler)
 
 	inventoryGroup := supplierGroup.Group("/inventory")
 

@@ -14,5 +14,6 @@ func RegisterCustomerRoutes(customerGroup fiber.Router) {
 	customerGroup.Get("/products", handlers.ListProductsCustomer)
 	customerGroup.Post("/order", handlers.OrderProduct)
 	customerGroup.Get("/orders", handlers.ListOrdersForCustomer)
+	customerGroup.Post("orders/:order_id/return-request", handlers.ReturnRequest)
 
 }
