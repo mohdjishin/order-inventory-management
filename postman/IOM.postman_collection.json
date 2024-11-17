@@ -1,0 +1,1175 @@
+{
+	"info": {
+		"_postman_id": "57f17a43-7500-4a6e-bf57-b03e4b7acfdb",
+		"name": "IOM",
+		"description": "# 🚀 Get started here\n\nThis collection guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this collection**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these request types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT and PATCH requests.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a variable called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more scripts in \"Tests\" to verify if the API works as expected and execute flows.\n    \n\n## ℹ️ Resources\n\n[Building requests](https://learning.postman.com/docs/sending-requests/requests/)  \n[Authorizing requests](https://learning.postman.com/docs/sending-requests/authorization/)  \n[Using variables](https://learning.postman.com/docs/sending-requests/variables/)  \n[Managing environments](https://learning.postman.com/docs/sending-requests/managing-environments/)  \n[Writing scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26504463"
+	},
+	"item": [
+		{
+			"name": "INVENTORY",
+			"item": [
+				{
+					"name": "SUPL addInventory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stock\": 10,\n  \"productName\": \"IPHONE 15 pro max\",\n  \"description\": \"A great product latest\",\n  \"price\": 5000,\n  \"category\": \"Electronics\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/inventory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"inventory"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:8080/supplier/inventory \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"stock\": 10,\n  \"productName\": \"Sample Product\",\n  \"description\": \"A great product\",\n  \"price\": 19.99,\n  \"category\": \"Electronics\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL get inventory",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/inventory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"inventory"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:8080/supplier/inventory \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"stock\": 10,\n  \"productName\": \"Sample Product\",\n  \"description\": \"A great product\",\n  \"price\": 19.99,\n  \"category\": \"Electronics\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL updateInventory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\":1,\n  \"newStock\":11,\n  \"newPrice\":1509\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/inventory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"inventory"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:8080/supplier/inventory \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"stock\": 10,\n  \"productName\": \"Sample Product\",\n  \"description\": \"A great product\",\n  \"price\": 19.99,\n  \"category\": \"Electronics\"\n}'\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login and create users",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"if (response.data && response.data.token) {",
+									"    const user = response.data.user;",
+									"",
+									"    if (user && user.role) {",
+									"        switch (user.role) {",
+									"            case 'supplier':",
+									"                pm.globals.set(\"sup_access_token\", response.data.token);",
+									"                console.log(\"Supplier token saved to global variable 'sup_access_token':\", response.data.token);",
+									"                break;",
+									"            case 'customer':",
+									"                pm.globals.set(\"cust_access_token\", response.data.token);",
+									"                console.log(\"Customer token saved to global variable 'cust_access_token':\", response.data.token);",
+									"                break;",
+									"            case 'admin':",
+									"                pm.globals.set(\"adm_access_token\", response.data.token);",
+									"                console.log(\"Admin token saved to global variable 'adm_access_token':\", response.data.token);",
+									"                break;",
+									"            default:",
+									"                console.log(\"Unknown role:\", user.role);",
+									"        }",
+									"    } else {",
+									"        console.log(\"User role is missing or null\");",
+									"    }",
+									"} else {",
+									"    console.log(\"Token not found in the response\");",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n  \"email\": \"admin@oim.com\",\n  \"password\": \"1\"\n \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"login"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/user/supplier \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"Supplier\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"if (response.data && response.data.token) {",
+									"    const user = response.data.user;",
+									"",
+									"    if (user && user.role) {",
+									"        switch (user.role) {",
+									"            case 'supplier':",
+									"                pm.globals.set(\"sup_access_token\", response.data.token);",
+									"                console.log(\"Supplier token saved to global variable 'sup_access_token':\", response.data.token);",
+									"                break;",
+									"            case 'customer':",
+									"                pm.globals.set(\"cust_access_token\", response.data.token);",
+									"                console.log(\"Customer token saved to global variable 'cust_access_token':\", response.data.token);",
+									"                break;",
+									"            case 'admin':",
+									"                pm.globals.set(\"adm_access_token\", response.data.token);",
+									"                console.log(\"Admin token saved to global variable 'adm_access_token':\", response.data.token);",
+									"                break;",
+									"            default:",
+									"                console.log(\"Unknown role:\", user.role);",
+									"        }",
+									"    } else {",
+									"        console.log(\"User role is missing or null\");",
+									"    }",
+									"} else {",
+									"    console.log(\"Token not found in the response\");",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adm_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\": \"passwOrd@123\",\n    \"newPassword\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"change-password"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/user/supplier \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"Supplier\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "createSupplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"TestOne@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"1234567890\",\n  \"firstName\":\"first\",\n  \"lastName\":\"last\"\n  \n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/supplier",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"supplier"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/user/supplier \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"Supplier\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "createCustomer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"TestTwo@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"first\",\n    \"phone\": \"1234267891\",\n    \"lastName\": \"last\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/customer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"customer"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/user/supplier \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"Supplier\"\n}'\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "ADM list non-approved-suppliers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/non-approved-suppliers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"non-approved-suppliers"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:8080/admin/non-approved-suppliers"
+					},
+					"response": []
+				},
+				{
+					"name": "ADM approve-supplier/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adm_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/approve-supplier/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"approve-supplier",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADM /blacklist-supplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/blacklist-supplier/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"blacklist-supplier",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADM list approved-suppliers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/approved-suppliers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"approved-suppliers"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:3000/admin/approved-suppliers\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "supplier",
+			"item": [
+				{
+					"name": "SUPL- approve-reject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": 1,\n  \"status\": \"APPROVED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/orders/approve-reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"orders",
+								"approve-reject"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL- update-delivery-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": 1,\n  \"status\": \"DELIVERED\",\n  \"_remarks\":\"can give anything over here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/orders/update-delivery-status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"orders",
+								"update-delivery-status"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL - list orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"orders"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL - list return-requests",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/orders/return-requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"orders",
+								"return-requests"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL - return-requests/approve-reject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\":1,\n    \"status\":\"APPROVED\",\n    \"_remarks\":\"\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/orders/return-requests/approve-reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"orders",
+								"return-requests",
+								"approve-reject"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL list with price history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/supplier/product/with-pricing-history",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"product",
+								"with-pricing-history"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "SUPL DELETE inventory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{sup_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/supplier/inventory/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"supplier",
+								"inventory",
+								"2"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "enduser (Customer)",
+			"item": [
+				{
+					"name": "CUST LIST products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cust_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"products"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:8080/supplier/inventory \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"stock\": 10,\n  \"productName\": \"Sample Product\",\n  \"description\": \"A great product\",\n  \"price\": 19.99,\n  \"category\": \"Electronics\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "CUST Return Requst for product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cust_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/orders/1/return-request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"orders",
+								"1",
+								"return-request"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:8080/supplier/inventory \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"stock\": 10,\n  \"productName\": \"Sample Product\",\n  \"description\": \"A great product\",\n  \"price\": 19.99,\n  \"category\": \"Electronics\"\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "CUST order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cust_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"quantity\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"order"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				},
+				{
+					"name": "CUST LIST orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cust_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer YOUR_JWT_TOKEN"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"orders"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/customer/buy \\\n-H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"product_id\": PRODUCT_ID,\n  \"quantity\": QUANTITY\n}'\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SysInfo",
+			"item": [
+				{
+					"name": "info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
