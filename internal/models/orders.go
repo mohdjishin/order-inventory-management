@@ -2,44 +2,58 @@ package models
 
 import "time"
 
-type Order struct {
-	ID         uint      `gorm:"primaryKey"`
-	UserID     uint      `gorm:"not null;index"` // Foreign key for User
-	ProductID  uint      `gorm:"not null;index"` // Foreign key for Product
-	Quantity   int       `gorm:"not null"`
-	TotalPrice float64   `gorm:"not null"`
-	Status     string    `gorm:"default:'PENDING'"`
-	CreatedAt  time.Time `gorm:"autoCreateTime"` // change to time.Time
-	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"-"`
-	SupplierID uint      `gorm:"not null;index"`
+type ShippingState uint
 
-	User     User    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"-"`
-	Product  Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;"  json:"-"`
-	Supplier User    `gorm:"foreignKey:SupplierID;constraint:OnDelete:CASCADE;"  json:"-"`
+const (
+	SPending   ShippingState = iota + 1
+	SShipping                // 2
+	SDelivered               // 3
+	SCancelled               // 4
+	SReturned                // 5
+)
+
+func (s ShippingState) String() string {
+	return []string{"PENDING", "SHIPPING", "DELIVERED", "CANCELLED", "RETURNED"}[s-1]
 }
 
-// TableName specifies the table name for the Order model.
+var ShippingStates = map[string]ShippingState{
+	"pending":   SPending,
+	"shipping":  SShipping,
+	"delivered": SDelivered,
+	"cancelled": SCancelled,
+	"returned":  SReturned,
+}
+
+type Order struct {
+	ID             uint             `gorm:"primaryKey" json:"id,omitempty"`
+	UserID         uint             `gorm:"not null;index" json:"userId,omitempty"`
+	ProductID      uint             `gorm:"not null;index" json:"productId,omitempty"`
+	Quantity       int              `gorm:"not null" json:"quantity,omitempty"`
+	TotalPrice     float64          `gorm:"not null" json:"totalPrice,omitempty"`
+	Status         string           `gorm:"default:'PENDING'" json:"status,omitempty"`
+	CreatedAt      time.Time        `gorm:"autoCreateTime" json:"-"`
+	UpdatedAt      time.Time        `gorm:"autoUpdateTime" json:"-" `
+	SupplierID     uint             `gorm:"not null;index" json:"supplierId,omitempty"`
+	User           User             `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"-"`
+	Product        Product          `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE;" json:"-"`
+	Supplier       User             `gorm:"foreignKey:SupplierID;constraint:OnDelete:CASCADE;" json:"-"`
+	ReturnStatus   string           `gorm:"default:''" json:"returnStatus,omitempty"`
+	ShippingStates []ShipmentStatus `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE;" json:"shippingStates,omitempty"`
+	ShippingState  ShippingState    `gorm:"default:1" json:"shippingState,omitempty" `
+}
+
 func (Order) TableName() string {
 	return "orders"
 }
 
-// // Migration function to add constraints and indexes
-// func AddOrderConstraints(db *gorm.DB) {
-// 	// Add CHECK constraint for Status field (only allows 'PENDING', 'COMPLETED', 'CANCELLED')
-// 	err := db.Exec(`
-// 		ALTER TABLE orders
-// 		ADD CONSTRAINT check_status
-// 		CHECK (status IN ('PENDING', 'COMPLETED', 'CANCELLED'));
-// 	`).Error
-// 	if err != nil {
-// 		panic("Failed to add check constraint for status")
-// 	}
+type ShipmentStatus struct {
+	ID             uint          `gorm:"primaryKey"`
+	OrderID        uint          `gorm:"not null;index"`
+	Status         ShippingState `gorm:"not null"`
+	UpdatedAt      time.Time     `gorm:"autoUpdateTime"`
+	AdditionalInfo string        `gorm:"type:text"`
+}
 
-// 	// Optionally, if required, add unique index on UserID + ProductID for order uniqueness
-// 	err = db.Exec(`
-// 		CREATE UNIQUE INDEX idx_user_product ON orders (user_id, product_id);
-// 	`).Error
-// 	if err != nil {
-// 		panic("Failed to add unique index for user and product")
-// 	}
-// }
+func (ShipmentStatus) TableName() string {
+	return "shipment_statuses"
+}

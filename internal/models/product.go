@@ -13,12 +13,12 @@ type Product struct {
 	Price       float64        `gorm:"not null"`
 	Category    string         `gorm:"not null"`
 	AddedBy     uint           `gorm:"not null"`
-	CreatedAt   time.Time      `gorm:"autoCreateTime"`
-	UpdatedAt   time.Time      `gorm:"autoUpdateTime"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"` // Soft delete field
+	CreatedAt   time.Time      `gorm:"autoCreateTime" json:"-"`
+	UpdatedAt   time.Time      `gorm:"autoUpdateTime" json:"-"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 
 	InventoryID uint `gorm:"not null;index"`
-	BlackListed bool `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
+	BlackListed bool `gorm:"default:false" json:"blacklisted,omitempty"`
 }
 
 func (Product) TableName() string {

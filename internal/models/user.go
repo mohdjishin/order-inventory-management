@@ -37,12 +37,10 @@ type User struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at,omitempty"`
 
 	// This field is used to approve the supplier by the admin only for suppliers
-	Approved    bool `gorm:"default:false" json:"approved"`              // Approved is false by default
-	BlackListed bool `gorm:"default:false" json:"blacklisted,omitempty"` // Blacklisted flag for suppliers
-
+	Approved    bool `gorm:"default:false" json:"approved"`
+	BlackListed bool `gorm:"default:false" json:"blacklisted,omitempty"`
 }
 
-// TableName specifies the table name for the User model
 func (User) TableName() string {
 	return "users"
 }
