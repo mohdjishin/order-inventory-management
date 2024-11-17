@@ -98,9 +98,9 @@ if (response.data && response.data.token) {
 <br>
 
 
-## Missing Admin Registration Endpoint?
+## No Admin Creation Endpoint
 
-It seems like there isn't a dedicated **Admin Registration** endpoint in this project. However, the system is designed to automatically create a default **Super Admin** user during the initial setup if no admin exists in the database.
+There is currently no endpoint available for creating an Admin. However, the system is designed to automatically generate a default Super Admin user during the initial setup.
 
 Here are the default credentials for the admin user:
 - **Email**: `admin@oim.com`
