@@ -21,6 +21,7 @@ TODOS:
    <!-- 1. add product -->
    2. update product
    3. delete product
+   4. Shipmemt once order is approved by by supplier. 
    <!-- 4. view all products -->
     <!-- 5. add stocks to existing products -->
     <!-- 6. approve or reject orders by customers. -->
