@@ -7,7 +7,6 @@ import (
 
 func GetVersion(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
-		"version":   meta.GetVersion(),
 		"buildTime": meta.GetBuildTime(),
 		"hash/tag":  meta.GetCommitHash(),
 	})
