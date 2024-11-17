@@ -15,6 +15,7 @@ TODOS:
   <!-- - blacklist supplier and all listed products. //  -->
   <!-- - update on all get buy products. apis like no record found. or something on blacklist products. -->
   - whitelist supplier
+  - statistics of products.
 
 
 - supplier
@@ -36,3 +37,4 @@ TODOS:
  - 3. once approved supplier is able to do approve again. fix this. 
  - 4.  when product delivery is cancelled and stock is increased. price of the product should be reduced write a db trigger or on cancel api write a logic to reduce the price.
  - 4. delivery address should be stored in the database. as of now not need not very important. for task completion.
+ - 5. password length and complexity should be checked. as of now not very important. for task completion.
